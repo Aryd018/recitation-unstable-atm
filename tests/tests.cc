@@ -93,7 +93,7 @@ TEST_CASE("Example: RegAccount with leading 0s", "[ex-4]") {
   REQUIRE(transactions[{00345677, 0234}] == empty);
 }
 
-TEST_CASE("Example: RegAccount with leading 0s", "[ex-5]") {
+TEST_CASE("RegAccount with leading 0", "[ex-5]") {
   Atm atm;
   atm.RegisterAccount(00345677, 0234, "John Doe", 314.15);
   auto accounts = atm.GetAccounts();
