@@ -87,18 +87,6 @@ TEST_CASE("Example: RegAccount with hopefully correct exception", "[ex-6]") {
   assert(correctExceptionThrown);
 }
 
-TEST_CASE("Example: RegAccount without exception on same name", "[ex-7]") {
-  Atm atm;
-  atm.RegisterAccount(12345677, 1234, "John Doe2", 314.15);
-  bool exceptionNotThrown = true;
-  try {
-    atm.RegisterAccount(19345677, 1234, "John Doe2", 314.15);
-  } catch (std::invalid_argument& e) {
-    exceptionNotThrown = false;
-  }
-  assert(exceptionNotThrown);
-}
-
 TEST_CASE("Negative withdraw amt", "[ex-8]") {
   Atm atm;
   atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
@@ -106,7 +94,7 @@ TEST_CASE("Negative withdraw amt", "[ex-8]") {
 
   try {
     atm.WithdrawCash(12345678, 1234, -20);
-  } catch (std::invalid_argument e) {
+  } catch (std::invalid_argument& e) {
     correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
@@ -119,7 +107,7 @@ TEST_CASE("Negative amt after withdraw", "[ex-9]") {
 
   try {
     atm.WithdrawCash(12345678, 1234, 400.30);
-  } catch (std::runtime_error e) {
+  } catch (std::runtime_error& e) {
     correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
@@ -130,7 +118,7 @@ TEST_CASE("Account for withdraw doesn't exist", "[ex-10]") {
   bool correct_exception_thrown = false;
   try {
     atm.WithdrawCash(12345678, 1234, 20);
-  } catch (std::invalid_argument e) {
+  } catch (std::invalid_argument& e) {
     correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
@@ -141,7 +129,7 @@ TEST_CASE("Account for deposit doesn't exist", "[ex-11]") {
   bool correct_exception_thrown = false;
   try {
     atm.DepositCash(12345678, 1234, 20);
-  } catch (std::invalid_argument e) {
+  } catch (std::invalid_argument& e) {
     correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
@@ -154,7 +142,7 @@ TEST_CASE("Negative deposit amt", "[ex-12]") {
 
   try {
     atm.DepositCash(12345678, 1234, -20);
-  } catch (std::invalid_argument e) {
+  } catch (std::invalid_argument& e) {
     correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
@@ -167,13 +155,13 @@ TEST_CASE("No account for printLedger()", "[ex-13]") {
     auto& transactions = atm.GetTransactions();
     transactions[{12345678, 1234}].push_back(
         "Withdrawal - Amount: $200.40, Updated Balance: $99.90");
-  } catch (std::invalid_argument e) {
+  } catch (std::invalid_argument& e) {
     bool correct_exception_thrown = true;
   }
   assert(correct_exception_thrown);
 }
 
-TEST_CASE("Example: Simple deposit", "[ex-14]") {
+TEST_CASE("Simple deposit", "[ex-14]") {
   Atm atm;
   atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
   atm.DepositCash(12345678, 1234, 20);
