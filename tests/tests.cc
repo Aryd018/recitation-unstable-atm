@@ -208,3 +208,13 @@ TEST_CASE("No account for printLedger()", "[ex-13]") {
   }
   assert(correct_exception_thrown);
 }
+
+TEST_CASE("Example: Simple deposit", "[ex-14]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  atm.DepositCash(12345678, 1234, 20);
+  auto accounts = atm.GetAccounts();
+  Account sam_account = accounts[{12345678, 1234}];
+
+  REQUIRE(sam_account.balance == 320.30);
+}
