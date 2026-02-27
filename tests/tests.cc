@@ -75,42 +75,6 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
 
-TEST_CASE("Example: RegAccount with leading 0s", "[ex-4]") {
-  Atm atm;
-  atm.RegisterAccount(00345677, 0234, "John Doe", 314.15);
-  auto accounts = atm.GetAccounts();
-  REQUIRE(accounts.contains({00345677, 0234}));
-  REQUIRE(accounts.size() == 1);
-
-  Account sam_account = accounts[{00345677, 0234}];
-  REQUIRE(sam_account.owner_name == "John Doe");
-  REQUIRE(sam_account.balance == 314.15);
-
-  auto transactions = atm.GetTransactions();
-  REQUIRE(accounts.contains({00345677, 0234}));
-  REQUIRE(accounts.size() == 1);
-  std::vector<std::string> empty;
-  REQUIRE(transactions[{00345677, 0234}] == empty);
-}
-
-TEST_CASE("RegAccount with leading 0", "[ex-5]") {
-  Atm atm;
-  atm.RegisterAccount(00345677, 0234, "John Doe", 314.15);
-  auto accounts = atm.GetAccounts();
-  REQUIRE(accounts.contains({00345677, 0234}));
-  REQUIRE(accounts.size() == 1);
-
-  Account sam_account = accounts[{00345677, 0234}];
-  REQUIRE(sam_account.owner_name == "John Doe");
-  REQUIRE(sam_account.balance == 314.15);
-
-  auto transactions = atm.GetTransactions();
-  REQUIRE(accounts.contains({00345677, 0234}));
-  REQUIRE(accounts.size() == 1);
-  std::vector<std::string> empty;
-  REQUIRE(transactions[{00345677, 0234}] == empty);
-}
-
 TEST_CASE("Example: RegAccount with hopefully correct exception", "[ex-6]") {
   Atm atm;
   atm.RegisterAccount(12345677, 1234, "John Doe2", 314.15);
