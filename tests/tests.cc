@@ -74,3 +74,137 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   atm.PrintLedger("./prompt.txt", 12345678, 1234);
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
+
+TEST_CASE("Example: RegAccount with leading 0s", "[ex-4]") {
+  Atm atm;
+  atm.RegisterAccount(00345677, 0234, "John Doe", 314.15);
+  auto accounts = atm.GetAccounts();
+  REQUIRE(accounts.contains({00345677, 0234}));
+  REQUIRE(accounts.size() == 1);
+
+  Account sam_account = accounts[{00345677, 0234}];
+  REQUIRE(sam_account.owner_name == "John Doe");
+  REQUIRE(sam_account.balance == 314.15);
+
+  auto transactions = atm.GetTransactions();
+  REQUIRE(accounts.contains({00345677, 0234}));
+  REQUIRE(accounts.size() == 1);
+  std::vector<std::string> empty;
+  REQUIRE(transactions[{00345677, 0234}] == empty);
+}
+
+TEST_CASE("Example: RegAccount with leading 0s", "[ex-5]") {
+  Atm atm;
+  atm.RegisterAccount(00345677, 0234, "John Doe", 314.15);
+  auto accounts = atm.GetAccounts();
+  REQUIRE(accounts.contains({00345677, 0234}));
+  REQUIRE(accounts.size() == 1);
+
+  Account sam_account = accounts[{00345677, 0234}];
+  REQUIRE(sam_account.owner_name == "John Doe");
+  REQUIRE(sam_account.balance == 314.15);
+
+  auto transactions = atm.GetTransactions();
+  REQUIRE(accounts.contains({00345677, 0234}));
+  REQUIRE(accounts.size() == 1);
+  std::vector<std::string> empty;
+  REQUIRE(transactions[{00345677, 0234}] == empty);
+}
+
+TEST_CASE("Example: RegAccount with hopefully correct exception", "[ex-6]") {
+  Atm atm;
+  atm.RegisterAccount(12345677, 1234, "John Doe2", 314.15);
+  bool correctExceptionThrown = false;
+  try {
+    atm.RegisterAccount(12345677, 1234, "John Doe3", 314.15);
+  } catch (std::invalid_argument& e) {
+    correctExceptionThrown = true;
+  }
+  assert(correctExceptionThrown);
+}
+
+TEST_CASE("Example: RegAccount without exception on same name", "[ex-7]") {
+  Atm atm;
+  atm.RegisterAccount(12345677, 1234, "John Doe2", 314.15);
+  bool exceptionNotThrown = true;
+  try {
+    atm.RegisterAccount(19345677, 1234, "John Doe2", 314.15);
+  } catch (std::invalid_argument& e) {
+    exceptionNotThrown = false;
+  }
+  assert(exceptionNotThrown);
+}
+
+TEST_CASE("Negative withdraw amt", "[ex-8]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  bool correct_exception_thrown = false;
+
+  try {
+    atm.WithdrawCash(12345678, 1234, -20);
+  } catch (std::invalid_argument e) {
+    correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
+
+TEST_CASE("Negative amt after withdraw", "[ex-9]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  bool correct_exception_thrown = false;
+
+  try {
+    atm.WithdrawCash(12345678, 1234, 400.30);
+  } catch (std::runtime_error e) {
+    correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
+
+TEST_CASE("Account for withdraw doesn't exist", "[ex-10]") {
+  Atm atm;
+  bool correct_exception_thrown = false;
+  try {
+    atm.WithdrawCash(12345678, 1234, 20);
+  } catch (std::invalid_argument e) {
+    correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
+
+TEST_CASE("Account for deposit doesn't exist", "[ex-11]") {
+  Atm atm;
+  bool correct_exception_thrown = false;
+  try {
+    atm.DepositCash(12345678, 1234, 20);
+  } catch (std::invalid_argument e) {
+    correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
+
+TEST_CASE("Negative deposit amt", "[ex-12]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  bool correct_exception_thrown = false;
+
+  try {
+    atm.DepositCash(12345678, 1234, -20);
+  } catch (std::invalid_argument e) {
+    correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
+
+TEST_CASE("No account for printLedger()", "[ex-13]") {
+  Atm atm;
+  bool correct_exception_thrown = false;
+  try {
+    auto& transactions = atm.GetTransactions();
+    transactions[{12345678, 1234}].push_back(
+        "Withdrawal - Amount: $200.40, Updated Balance: $99.90");
+  } catch (std::invalid_argument e) {
+    bool correct_exception_thrown = true;
+  }
+  assert(correct_exception_thrown);
+}
